@@ -142,7 +142,15 @@ class Observation(ValidatedRecord):
 class RecordingSession:
     speaker: SpeakerProfile
     observations: List[Observation]
-    validation_issues: List[str] = field(default_factory=list)
+    _validation_issues: List[str] = field(default_factory=list, init=False)
+
+    @property
+    def validation_issues(self) -> List[str]:
+        return self._validation_issues
+
+    @validation_issues.setter
+    def validation_issues(self, value: List[str]) -> None:
+        self._validation_issues = list(value)
 
     @classmethod
     def from_data(cls, speaker: SpeakerProfile, observations: Iterable[dict]) -> "RecordingSession":
