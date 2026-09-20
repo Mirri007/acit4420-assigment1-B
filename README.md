@@ -4,17 +4,17 @@
 This project implements Option B: Podcast Voice and Recording Analyzer.
 
 ## Student information
-- Student name: [Insert student name]
+- Student name: Lara Hassanieh
 - Student number: [Insert student number]
 
 ## Short description of the application
-This application receives extracted acoustic features from speech windows and organizes them into speaker and session objects. It validates the numerical measurements, excludes or flags windows without usable speech, compares each session to the speaker's usual profile, and produces an interpretable quality and speaking-style report without needing the original audio or transcript.
+This application receives extracted acoustic features from short speech windows and structures them into speaker and session objects. It validates the numerical measurements, identifies or flags unusable speech segments, compares each recording session with the speaker's usual profile, and generates an interpretable report describing quality and speaking style without access to the original audio or transcript.
 
 ## Class design and the responsibility of each class
-- ValidatedRecord: base class used to demonstrate inheritance and an overridable validation API.
-- SpeakerProfile: represents a speaker's usual acoustic profile, including usual pitch, energy, speech rate and pause ratio. It validates the profile before use.
-- Observation: represents one speech window and stores pitch, energy, speech rate, pause ratio, background noise, signal quality, and speech presence.
-- RecordingSession: composes a speaker and multiple observations, calculates session summaries, compares the session to the speaker profile, and collects validation issues.
+- ValidatedRecord: base class used to demonstrate inheritance and a reusable validation interface.
+- SpeakerProfile: stores the speaker's usual acoustic profile, including pitch, energy, speech rate and pause ratio, and validates the profile before it is used.
+- Observation: represents one speech window and stores pitch, energy, speech rate, pause ratio, background noise, signal quality and speech presence.
+- RecordingSession: composes a SpeakerProfile and multiple Observation objects, calculates session-level summaries, compares the session against the speaker profile, and collects validation issues.
 
 ## Where composition, encapsulation, inheritance and overriding are demonstrated
 - Composition: RecordingSession contains a SpeakerProfile and a list of Observation objects.
@@ -23,11 +23,11 @@ This application receives extracted acoustic features from speech windows and or
 - Overriding: SpeakerProfile.validate() and Observation.validate() override the base validation behavior defined in ValidatedRecord.
 
 ## Assumptions and classification rules
-- The program does not have access to raw audio or transcript text; it only works with extracted measurements.
-- A speech-present observation must include usable pitch, energy, speech rate and pause-ratio values.
-- Values outside their valid range are flagged and included in the session report rather than crashing the program.
-- Windows with no usable speech are excluded from feature summaries or marked as invalid depending on the context.
-- The session is classified using the average recorded measurements compared to the speaker's usual profile.
+- The program does not have access to raw audio or transcript text; it only works with extracted numerical measurements.
+- A speech-present observation must contain usable pitch, energy, speech rate and pause-ratio values.
+- Values outside the valid ranges are flagged and recorded in the session report rather than causing the program to crash.
+- Windows with no usable speech are excluded from speech-based summaries or flagged as invalid, depending on the context.
+- The session is classified by comparing the average recorded measurements to the speaker's usual profile.
 - Classification categories include:
   - consistent speaking style
   - energetic delivery
@@ -35,15 +35,22 @@ This application receives extracted acoustic features from speech windows and or
   - temporarily varied delivery
   - high background noise
   - insufficient data or poor recording quality
-- Overall quality is interpreted from signal-quality and noise indicators.
+- Overall recording quality is interpreted from the signal-quality and noise indicators.
 
 ## Exact installation and running instructions
-1. Make sure Python 3 is installed on the machine.
+1. Ensure that Python 3 is installed on the machine.
 2. Open a terminal in the project folder.
 3. Run the example program:
+   ```bash
    python3 example_usage.py
-4. Run the tests:
+   ```
+4. Run the project tests:
+   ```bash
    python3 -m pytest -q
+   ```
+
+## Example usage
+The program can be run directly, and the output includes the available scenarios, the speaker profile, the first observation windows and the generated session report.
 
 ## Example output
 ```text
@@ -74,6 +81,6 @@ Validation issues:
 ```
 
 ## Known limitations
-- The solution only analyzes the extracted feature values provided by the generator; it does not reconstruct original speech audio or transcripts.
-- The classification is heuristic and based on comparisons between the session and the speaker's usual profile; it is intentionally simplified for the assignment.
+- The solution only analyzes the extracted feature values supplied by the generator; it does not reconstruct the original speech audio or transcript content.
+- The classification is heuristic and based on the difference between the session and the speaker's usual profile; it is intentionally simplified for the assignment.
 - The project is designed around the supplied generator data and is not intended for arbitrary, unseen audio datasets.
